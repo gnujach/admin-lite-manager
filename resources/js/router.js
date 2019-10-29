@@ -6,6 +6,7 @@ import AddUser from './views/AddUser';
 import ListUsers from './views/ListUsers';
 import EditUser from './views/EditUser';
 import EditRoles from './views/EditRoles';
+import AddPermissions from './views/AddPermissions';
 Vue.use(VueRouter);
 
 export default new VueRouter({
@@ -34,6 +35,11 @@ export default new VueRouter({
 		{
 			path: '/admin/usuarios/editarroles/:id',
 			component: EditRoles,
+			props: true
+		},
+		{
+			path: '/admin/permisos/create',
+			component: AddPermissions,
 			props: true
 		}
 	],
