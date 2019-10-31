@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\{UserAddRequest};
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Carbon\Carbon;
 use Image;
 use Auth;
@@ -28,8 +29,7 @@ class UserController extends Controller
     {
         $this->authorize(User::class, 'view');
         // $response = $this->authorize(User::class,'index');
-        if($request->ajax())
-        {
+        if ($request->ajax()) {
             $users = new User;
             $users = $users->paginate(config('openlink.perpage'));
             return response()->json($users);
@@ -64,15 +64,14 @@ class UserController extends Controller
         $roles = $request->roles;
         foreach ($roles as $rol) {
             $role = Role::find($rol);
-            if($role)
-            {
+            if ($role) {
                 $user->assignRole($role);
             }
         }
         return response()->json($request);
 
         $user = User::create($request->all());
-        return response()->json($user);   
+        return response()->json($user);
     }
 
     /**
@@ -83,11 +82,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('edit',User::class);
+        $this->authorize('edit', User::class);
         $user = User::findOrFail($id);
         return response()->json($user);
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -100,7 +99,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         return response()->json($user);
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -114,8 +113,7 @@ class UserController extends Controller
         $user->update($request->only([
             'name', 'email',
         ]));
-        if($request->password)
-        {
+        if ($request->password) {
             $user->update(['password' => Hash::make($request->password)]);
         }
         return response()->json($user);
@@ -137,8 +135,8 @@ class UserController extends Controller
      */
     public function roles()
     {
-        $this->authorize('edit',User::class);
-        return response()->json(Role::all(['id','name']));
+        $this->authorize('edit', User::class);
+        return response()->json(Role::all(['id', 'name']));
     }
     /**
      * Update roles
@@ -147,14 +145,14 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateRoles(Request $request) {
+    public function updateRoles(Request $request)
+    {
         $rol_valido = false;
         $roles = $request->roles;
         $user = User::findOrFail($request->user_id);
         foreach ($roles as $rol) {
             $role = Role::find($rol);
-            if($role)
-            {
+            if ($role) {
                 $rol_valido = true;
             }
         }
@@ -176,5 +174,16 @@ class UserController extends Controller
             }
         }
         return view('profile', array('user' => Auth::user()));
+    }
+    /**
+     * 
+     * Find Permission
+     */
+    public function findPermission(Request $request)
+    {
+        $this->authorize('create', User::class);
+        if ($request->ajax()) {
+            return response()->json($request);
+        }
     }
 }

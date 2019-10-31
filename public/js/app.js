@@ -1864,7 +1864,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "AlertError",
-  props: ["hidden"],
+  props: ["hidden", "msg"],
   data: function data() {
     return {
       mostrar: this.hidden
@@ -1891,6 +1891,18 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _UserCircle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserCircle */ "./resources/js/components/UserCircle.vue");
 /* harmony import */ var _AvatarComponet__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AvatarComponet */ "./resources/js/components/AvatarComponet.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2043,6 +2055,36 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AlertError__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AlertError */ "./resources/js/components/AlertError.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2389,6 +2431,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2409,7 +2464,13 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this; // post action rest
 
 
-      _this.disponible = true;
+      axios.post("/admin/permisos/find", {
+        model: this.model
+      }).then(function (res) {
+        _this.disponible = true;
+      })["catch"](function (err) {
+        console.log("Error");
+      });
       _this.sendModel = false;
     },
     submitForm: function submitForm() {
@@ -38838,10 +38899,10 @@ var render = function() {
           attrs: { role: "alert" }
         },
         [
-          _c("strong", { staticClass: "font-bold" }, [_vm._v("Holy smokes!")]),
+          _c("strong", { staticClass: "font-bold" }, [_vm._v("Atencion!")]),
           _vm._v(" "),
           _c("span", { staticClass: "block sm:inline" }, [
-            _vm._v("Something seriously bad happened.")
+            _vm._v(_vm._s(_vm.msg))
           ]),
           _vm._v(" "),
           _c(
@@ -39067,6 +39128,40 @@ var render = function() {
                       )
                     ]
                   )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.$parent.userCan("manage-users")
+                ? _c(
+                    "router-link",
+                    {
+                      staticClass:
+                        "flex py-2 items-center text-sm hover:text-blue-600",
+                      attrs: { to: "/admin/permisos/create" }
+                    },
+                    [
+                      _c(
+                        "svg",
+                        {
+                          staticClass: "fill-current text-blue-600 w-5 h-5",
+                          attrs: { viewBox: "0 0 24 24" }
+                        },
+                        [
+                          _c("path", {
+                            attrs: {
+                              d:
+                                "M23.3 11.9c0 .9-.6 1.4-1.4 1.4h-8.5v8.5c0 .9-.6 1.4-1.4 1.4s-1.4-.6-1.4-1.4v-8.5H2c-.9 0-1.4-.6-1.4-1.4 0-.9.6-1.4 1.4-1.4h8.5V1.9c0-.9.6-1.4 1.4-1.4s1.4.6 1.4 1.4v8.5h8.5c.9 0 1.5.6 1.5 1.5z"
+                            }
+                          })
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "tracking-wide pl-3 uppercase" },
+                        [_vm._v("Agregar permisos")]
+                      )
+                    ]
+                  )
                 : _vm._e()
             ],
             1
@@ -39232,101 +39327,170 @@ var render = function() {
     ? _c("div", [
         _c(
           "div",
-          { staticClass: "flex w-full" },
-          [_c("AlertError", { attrs: { hidden: _vm.showError } })],
+          { staticClass: "w-full" },
+          [
+            _c("AlertError", {
+              attrs: {
+                hidden: _vm.showError,
+                msg: "Debe seleccionar al menos un permiso"
+              }
+            })
+          ],
           1
         ),
         _vm._v(" "),
-        _c(
-          "form",
-          {
-            staticClass: "w-full max-w-lg",
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.submitForm($event)
-              }
-            }
-          },
-          [
-            _c("div", { staticClass: "flex w-full" }, [
-              _c("h2", { staticClass: "mt-2 text-3xl" }, [
-                _vm._v("\n        Permisos para el modelo\n        "),
-                _c("span", { staticClass: "italic" }, [
-                  _vm._v(_vm._s(_vm.name))
-                ])
-              ]),
-              _vm._v(" "),
-              _c("hr")
+        _c("div", { staticClass: "flex" }, [
+          _c("div", { staticClass: "flex w-1/2 justify-between" }, [
+            _c(
+              "div",
+              { staticClass: "block w-full" },
+              [
+                _c("h2", { staticClass: "mt-2 text-3xl" }, [
+                  _vm._v("\n          Permisos para el modelo\n          "),
+                  _c("span", { staticClass: "italic" }, [
+                    _vm._v(_vm._s(_vm.name))
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.can_actions, function(item) {
+                  return _c("div", { key: item, staticClass: "w-full" }, [
+                    _c("label", { staticClass: "flex items-center" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.values,
+                            expression: "values"
+                          }
+                        ],
+                        staticClass: "form-checkbox text-2xl",
+                        attrs: { type: "checkbox", id: "item", checked: "" },
+                        domProps: {
+                          value: item,
+                          checked: Array.isArray(_vm.values)
+                            ? _vm._i(_vm.values, item) > -1
+                            : _vm.values
+                        },
+                        on: {
+                          change: [
+                            function($event) {
+                              var $$a = _vm.values,
+                                $$el = $event.target,
+                                $$c = $$el.checked ? true : false
+                              if (Array.isArray($$a)) {
+                                var $$v = item,
+                                  $$i = _vm._i($$a, $$v)
+                                if ($$el.checked) {
+                                  $$i < 0 && (_vm.values = $$a.concat([$$v]))
+                                } else {
+                                  $$i > -1 &&
+                                    (_vm.values = $$a
+                                      .slice(0, $$i)
+                                      .concat($$a.slice($$i + 1)))
+                                }
+                              } else {
+                                _vm.values = $$c
+                              }
+                            },
+                            function($event) {
+                              return _vm.checkItem()
+                            }
+                          ]
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "ml-2 text-2xl" }, [
+                        _vm._v(_vm._s(item))
+                      ])
+                    ])
+                  ])
+                })
+              ],
+              2
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "w-1/2 mt-2" }, [
+            _c("h2", { staticClass: "text-2xl mt-2" }, [
+              _vm._v("¿Crear Rol para modelo?")
             ]),
             _vm._v(" "),
-            _vm._l(_vm.can_actions, function(item) {
-              return _c("div", { key: item, staticClass: "w-full" }, [
-                _c("label", { staticClass: "flex items-center" }, [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.values,
-                        expression: "values"
+            _c("div", { staticClass: "inline-block relative w-64 mt-10" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                },
+                [
+                  _c(
+                    "svg",
+                    {
+                      staticClass: "fill-current h-4 w-4",
+                      attrs: {
+                        xmlns: "http://www.w3.org/2000/svg",
+                        viewBox: "0 0 20 20"
                       }
-                    ],
-                    staticClass: "form-checkbox text-2xl",
-                    attrs: { type: "checkbox", id: "item", checked: "" },
-                    domProps: {
-                      value: item,
-                      checked: Array.isArray(_vm.values)
-                        ? _vm._i(_vm.values, item) > -1
-                        : _vm.values
                     },
-                    on: {
-                      change: [
-                        function($event) {
-                          var $$a = _vm.values,
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = item,
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 && (_vm.values = $$a.concat([$$v]))
-                            } else {
-                              $$i > -1 &&
-                                (_vm.values = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
-                            }
-                          } else {
-                            _vm.values = $$c
-                          }
-                        },
-                        function($event) {
-                          return _vm.checkItem()
+                    [
+                      _c("path", {
+                        attrs: {
+                          d:
+                            "M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
                         }
-                      ]
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "ml-2 text-2xl" }, [
-                    _vm._v(_vm._s(item))
-                  ])
-                ])
-              ])
-            }),
-            _vm._v(" "),
-            _c("input", {
-              staticClass:
-                "ml-2 my-2 bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded",
-              attrs: { type: "submit", value: "Guardar" }
-            })
-          ],
-          2
-        )
+                      })
+                    ]
+                  )
+                ]
+              )
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _vm._m(1)
       ])
     : _vm._e()
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "select",
+      {
+        staticClass:
+          "block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+      },
+      [_c("option", [_vm._v("Si")]), _vm._v(" "), _c("option", [_vm._v("No")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "w-full flex align-middle justify-around mt-8" },
+      [
+        _c("input", {
+          staticClass:
+            "ml-2 my-2 bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded",
+          attrs: { type: "reset", value: "Cancelar" }
+        }),
+        _vm._v(" "),
+        _c("input", {
+          staticClass:
+            "ml-2 my-2 bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded",
+          attrs: { type: "submit", value: "Guardar" }
+        })
+      ]
+    )
+  }
+]
 render._withStripped = true
 
 
@@ -39802,7 +39966,7 @@ var render = function() {
           "button",
           {
             staticClass:
-              "ml-2 my-2 bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded",
+              "ml-2 my-2 bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded",
             attrs: { disabled: _vm.loading },
             on: { click: _vm.addModel }
           },
@@ -39812,7 +39976,6 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "flex w-full" },
         [
           _vm.disponible
             ? _c("ComponentPermission", {
@@ -39832,7 +39995,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("label", { staticClass: "py-3 text-blue-500 font-bold mr-2" }, [
-      _vm._v("Modelo "),
+      _vm._v("\n        Modelo\n        "),
       _c("span", { staticClass: "italic" }, [_vm._v("(en singular)")])
     ])
   }
