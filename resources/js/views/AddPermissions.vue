@@ -10,7 +10,7 @@
           v-bind:disabled="!sendModel"
           type="text"
           id="model"
-          class="form-input mt-1 block w-96 mr-2 uppercase"
+          class="form-input mt-1 block w-96 mr-2"
           v-model="model"
           placeholder="venta"
           autofocus
@@ -22,6 +22,7 @@
         >Agregar</button>
       </div>
       <div>
+        <AlertError class="mt-4" :hidden="modelInvalid" msg="El modelo ya cuenta con permisos" />
         <ComponentPermission v-if="disponible" :name="model" class="mt-4"></ComponentPermission>
       </div>
     </div>
@@ -29,6 +30,8 @@
 </template>
 <script>
 import ComponentPermission from "../components/ComponentPermission";
+import AlertError from "../components/AlertError";
+
 export default {
   data() {
     return {
@@ -37,23 +40,39 @@ export default {
       message: null,
       loading: false,
       disponible: false,
-      sendModel: true
+      sendModel: true,
+      showError: false,
+      modelInvalid: false,      
     };
   },
-  components: { ComponentPermission },
+  components: { ComponentPermission, AlertError },
   methods: {
     addModel() {
       let _this = this;
-      // post action rest
-      axios
-        .post("/admin/permisos/find", { model: this.model })
-        .then(res => {
-          _this.disponible = true;
-        })
-        .catch(err => {
-          console.log("Error");
-        });
-      _this.sendModel = false;
+      console.log(_this.model.length);
+      if (_this.model.length > 4 && _this.model.length < 12) {
+        // post action rest
+        axios
+          .post("/admin/permisos/find", { model: this.model })
+          .then(res => {
+            _this.modelInvalid = res.data.invalido;
+            if ( _this.modelInvalid ) {
+                _this.sendModel = true;
+                _this.showError = true;
+            }
+              else {
+                _this.sendModel = false;
+                _this.disponible = true;
+              }
+          })
+          .catch(err => {
+            console.log("Error");
+          });
+      } else {
+        _this.modelInvalid = true;
+        _this.sendModel = true;
+      }
+      // _this.sendModel = false;
     },
     submitForm: function() {
       console.log("====================================");

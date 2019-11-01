@@ -2120,6 +2120,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ComponentPermission",
@@ -2150,6 +2152,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     checkValues: function checkValues() {
       alert("pressed");
+    },
+    resetForm: function resetForm() {
+      this.$router.go(this.$router.currentRoute); // window.location.reload();
     },
     submitForm: function submitForm() {
       var _this = this;
@@ -2415,6 +2420,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_ComponentPermission__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/ComponentPermission */ "./resources/js/components/ComponentPermission.vue");
+/* harmony import */ var _components_AlertError__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/AlertError */ "./resources/js/components/AlertError.vue");
 //
 //
 //
@@ -2444,6 +2450,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2453,25 +2461,43 @@ __webpack_require__.r(__webpack_exports__);
       message: null,
       loading: false,
       disponible: false,
-      sendModel: true
+      sendModel: true,
+      showError: false,
+      modelInvalid: false
     };
   },
   components: {
-    ComponentPermission: _components_ComponentPermission__WEBPACK_IMPORTED_MODULE_0__["default"]
+    ComponentPermission: _components_ComponentPermission__WEBPACK_IMPORTED_MODULE_0__["default"],
+    AlertError: _components_AlertError__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   methods: {
     addModel: function addModel() {
-      var _this = this; // post action rest
+      var _this = this;
 
+      console.log(_this.model.length);
 
-      axios.post("/admin/permisos/find", {
-        model: this.model
-      }).then(function (res) {
-        _this.disponible = true;
-      })["catch"](function (err) {
-        console.log("Error");
-      });
-      _this.sendModel = false;
+      if (_this.model.length > 4 && _this.model.length < 12) {
+        // post action rest
+        axios.post("/admin/permisos/find", {
+          model: this.model
+        }).then(function (res) {
+          _this.modelInvalid = res.data.invalido;
+
+          if (_this.modelInvalid) {
+            _this.sendModel = true;
+            _this.showError = true;
+          } else {
+            _this.sendModel = false;
+            _this.disponible = true;
+          }
+        })["catch"](function (err) {
+          console.log("Error");
+        });
+      } else {
+        _this.modelInvalid = true;
+        _this.sendModel = true;
+      } // _this.sendModel = false;
+
     },
     submitForm: function submitForm() {
       console.log("====================================");
@@ -39400,9 +39426,11 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
-                      _c("span", { staticClass: "ml-2 text-2xl" }, [
-                        _vm._v(_vm._s(item))
-                      ])
+                      _c(
+                        "span",
+                        { staticClass: "ml-2 text-2xl items-center" },
+                        [_vm._v(_vm._s(item))]
+                      )
                     ])
                   ])
                 })
@@ -39450,7 +39478,25 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _vm._m(1)
+        _c(
+          "div",
+          { staticClass: "w-full flex align-middle justify-around mt-8" },
+          [
+            _c("input", {
+              staticClass:
+                "ml-2 my-2 bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded",
+              attrs: { type: "reset", value: "Cancelar" },
+              on: { click: _vm.resetForm }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              staticClass:
+                "ml-2 my-2 bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded",
+              attrs: { type: "submit", value: "Guardar" },
+              on: { click: _vm.submitForm }
+            })
+          ]
+        )
       ])
     : _vm._e()
 }
@@ -39466,28 +39512,6 @@ var staticRenderFns = [
           "block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
       },
       [_c("option", [_vm._v("Si")]), _vm._v(" "), _c("option", [_vm._v("No")])]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "w-full flex align-middle justify-around mt-8" },
-      [
-        _c("input", {
-          staticClass:
-            "ml-2 my-2 bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded",
-          attrs: { type: "reset", value: "Cancelar" }
-        }),
-        _vm._v(" "),
-        _c("input", {
-          staticClass:
-            "ml-2 my-2 bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded",
-          attrs: { type: "submit", value: "Guardar" }
-        })
-      ]
     )
   }
 ]
@@ -39943,7 +39967,7 @@ var render = function() {
               expression: "model"
             }
           ],
-          staticClass: "form-input mt-1 block w-96 mr-2 uppercase",
+          staticClass: "form-input mt-1 block w-96 mr-2",
           attrs: {
             disabled: !_vm.sendModel,
             type: "text",
@@ -39977,6 +40001,14 @@ var render = function() {
       _c(
         "div",
         [
+          _c("AlertError", {
+            staticClass: "mt-4",
+            attrs: {
+              hidden: _vm.modelInvalid,
+              msg: "El modelo ya cuenta con permisos"
+            }
+          }),
+          _vm._v(" "),
           _vm.disponible
             ? _c("ComponentPermission", {
                 staticClass: "mt-4",

@@ -21,7 +21,7 @@
                 class="form-checkbox text-2xl"
                 checked
               />
-              <span class="ml-2 text-2xl">{{item}}</span>
+              <span class="ml-2 text-2xl items-center">{{item}}</span>
             </label>
           </div>
         </div>
@@ -50,15 +50,17 @@
       </div>
     </div>
     <div class="w-full flex align-middle justify-around mt-8">
-      <input
-        type="reset"
+       <input
+       type="reset"
+       @click="resetForm"
+       value="Cancelar"
         class="ml-2 my-2 bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
-        value="Cancelar"
       />
       <input
         type="submit"
         class="ml-2 my-2 bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
         value="Guardar"
+        @click="submitForm"
       />
     </div>
   </div>
@@ -91,6 +93,10 @@ export default {
     },
     checkValues() {
       alert("pressed");
+    },
+    resetForm() {
+      this.$router.go(this.$router.currentRoute)
+      // window.location.reload();
     },
     submitForm() {
       let _this = this;

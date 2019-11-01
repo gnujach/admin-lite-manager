@@ -183,7 +183,12 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
         if ($request->ajax()) {
-            return response()->json($request);
+            $permiso = $request['model'];
+            $intoPermission = Permission::where('name', 'like', '%-' . $permiso)->count();
+            if ($intoPermission > 1) {
+                return response()->json(['invalido' => true]);
+            } else 
+                return response()->json(['invalido' => false]);
         }
     }
 }
