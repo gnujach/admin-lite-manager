@@ -4,10 +4,15 @@
       <div class="mt-3">
         <div class>
           <div class="pl-3">
-            <label class="block">
-              <span class="text-gray-700">Nombre</span>
-              <input class="form-input mt-1 block w-full" placeholder="Jane" />
-            </label>
+           <t-input-group
+            label="Nombre"
+            feedback="Only letter without number"
+          >
+            <t-input
+              v-model="form.name"
+              type="text"
+            />
+          </t-input-group>
           </div>
           <div class="pl-3">
             <label class="block">

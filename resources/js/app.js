@@ -1,9 +1,13 @@
 import Vue from 'vue';
 import router from './router';
 import App from './components/App';
+import VueTailwind from 'vue-tailwind';
+import MyOwnTheme from './MyTailWindTheme'
 
 require('./bootstrap');
-
+Vue.use(VueTailwind, {
+	theme: MyOwnTheme
+});
 const app = new Vue({
 	el: '#app',
 	components: {
@@ -21,9 +25,9 @@ const app = new Vue({
 			}
 			return false;
 		},
-		MakeUrl(path) {
-			return BaseUrl(path);
-		}
+		// MakeUrl(path) {
+		// 	return BaseUrl(path);
+		// }
 	},
 	router
 });
