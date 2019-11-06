@@ -1,26 +1,28 @@
 <template>
   <div>
     <div class="w-full">
-      <div class="w-full flex justify-around">
-        <label class="py-3 text-blue-500 font-bold mr-2">
-          Modelo
-          <span class="italic">(en singular)</span>
-        </label>
-        <input
-          v-bind:disabled="!sendModel"
-          type="text"
-          id="model"
-          class="form-input mt-1 block w-96 mr-2"
-          v-model="model"
-          placeholder="venta"
-          autofocus
-        />
-        <button
-          v-bind:disabled="loading"
-          @click="addModel"
-          class="ml-2 my-2 bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-        >Agregar</button>
-      </div>
+      <form  @submit.prevent="submitForm" class="w-full flex justify-around">
+        <label for="model" class="w-1/3 my-2 py-2 text-center text-lg">Nombre</label>
+          <div class="w-1/3 my-2">
+            <t-input
+              id="model"
+              v-model="model"
+              type="text"
+              pattern="^([a-z]+)$"
+              maxlength="12"
+              autofocus
+              required
+            />
+          </div>
+          <div class="w-1/3 my-2 flex justify-center">
+            <input type="submit"
+              v-bind:disabled="loading"
+              class="w-1/2 ml-2 my-2 bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+              value="Buscar"
+            >
+          </div>
+      </form>
+    </div>
       <div>
         <AlertError class="mt-4" :hidden="modelInvalid" msg="El modelo ya cuenta con permisos" />
         <ComponentPermission v-if="disponible" :name="model" class="mt-4"></ComponentPermission>
@@ -75,6 +77,8 @@ export default {
       // _this.sendModel = false;
     },
     submitForm: function() {
+      let _this = this;
+      _this.addModel();
       console.log("====================================");
       console.log(this.form);
       console.log("====================================");

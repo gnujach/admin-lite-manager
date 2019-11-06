@@ -72,7 +72,7 @@
           <div>Clientes</div>
           <Avatar :user="$parent.user" class="ml-6"></Avatar>
         </div>
-        <router-view class="p-6 flex"></router-view>
+        <router-view class="p-6"></router-view>
       </div>
     </div>
   </div>

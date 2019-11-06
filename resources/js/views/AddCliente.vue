@@ -6,11 +6,16 @@
           <div class="pl-3">
            <t-input-group
             label="Nombre"
-            feedback="Only letter without number"
+            feedback="Solo letras sin espacios en minúsculas"
+
           >
             <t-input
               v-model="form.name"
               type="text"
+              pattern="^([a-z]+)$"
+              autofocus=true
+              maxlength="12"
+              required=true
             />
           </t-input-group>
           </div>

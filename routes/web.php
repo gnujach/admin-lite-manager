@@ -24,6 +24,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     // Route::get('dashboard', 'DashboardController')->name('dashboard');
     Route::get('users/roles', 'UserController@roles')->name('users.roles');
     Route::post('permisos/find', 'UserController@findPermission')->name('permisos.find');
+    Route::post('permisos/addpermission', 'UserController@addPermission')->name('permisos.add');
     Route::post('users/updateroles', 'UserController@updateRoles')->name('users.updatesroles');
     Route::resource('users', 'UserController', [
         'names' => [

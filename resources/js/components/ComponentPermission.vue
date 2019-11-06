@@ -2,6 +2,15 @@
   <div v-if="can_actions.length">
     <div class="w-full">
       <AlertError :hidden="showError" msg="Debe seleccionar al menos un permiso" />
+      <t-alert
+      base-class="border px-4 py-3 rounded relative"
+      danger-class="bg-red-100 border-red-400 text-red-700"
+      variant="success"
+      :show="creado"
+    >
+    <p>Permisos creados.</p>
+</t-alert>
+
     </div>
     <div class="flex">
       <div class="flex w-1/2 justify-between">
@@ -30,7 +39,7 @@
         <h2 class="text-2xl mt-2">¿Crear Rol para modelo?</h2>
         <div class="inline-block relative w-64 mt-10">
           <select
-            class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+            v-model="rol" class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
           >
             <option>Si</option>
             <option>No</option>
@@ -76,7 +85,10 @@ export default {
       acciones: ["manage-", "view-", "create-", "edit-", "delete-"],
       values: [],
       loading: true,
-      showError: false
+      showError: false,
+      rol: 'Si',
+      creado: false,
+      errors: []
     };
   },
   props: ["name"],
@@ -100,9 +112,17 @@ export default {
     },
     submitForm() {
       let _this = this;
-      console.log(_this.values.length);
       if (_this.values.length < 1) _this.showError = true;
       else _this.showError = false;
+      axios
+          .post("/admin/permisos/addpermission", { model: _this.name, values: _this.values, rol: _this.rol  })
+          .then(res => {
+            _this.creado = true
+          })
+          .catch (err => {
+            _this.errors = err
+          })
+
     }
   }
 };

@@ -191,4 +191,28 @@ class UserController extends Controller
                 return response()->json(['invalido' => false]);
         }
     }
+    /**
+     * 
+     * Add Permission
+     */
+    public function addPermission(Request $request)
+    {
+        $this->authorize('create', User::class);
+        if ($request->ajax()) {
+            $validatedData = $request->validate([
+                'model' => 'required|unique:roles|max:8'
+            ]);
+            return response()->json($request);
+            if ($request['rol'] = 'Si') {
+                $Role = Role::create(['name' => $request['model']]);
+            }
+            $adminPermissions = $request['values'];
+            foreach($adminPermissions as $ap)
+            {
+                $permission = Permission::create(['name' => $ap]);
+                $Role->givePermissionTo($permission);
+            }
+            return response()->json($request);
+        }
+    }
 }

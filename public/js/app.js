@@ -2122,6 +2122,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ComponentPermission",
@@ -2134,7 +2143,10 @@ __webpack_require__.r(__webpack_exports__);
       acciones: ["manage-", "view-", "create-", "edit-", "delete-"],
       values: [],
       loading: true,
-      showError: false
+      showError: false,
+      rol: 'Si',
+      creado: false,
+      errors: []
     };
   },
   props: ["name"],
@@ -2159,8 +2171,16 @@ __webpack_require__.r(__webpack_exports__);
     submitForm: function submitForm() {
       var _this = this;
 
-      console.log(_this.values.length);
       if (_this.values.length < 1) _this.showError = true;else _this.showError = false;
+      axios.post("/admin/permisos/addpermission", {
+        model: _this.name,
+        values: _this.values,
+        rol: _this.rol
+      }).then(function (res) {
+        _this.creado = true;
+      })["catch"](function (err) {
+        _this.errors = err;
+      });
     }
   }
 });
@@ -2391,6 +2411,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2426,6 +2451,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_ComponentPermission__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/ComponentPermission */ "./resources/js/components/ComponentPermission.vue");
 /* harmony import */ var _components_AlertError__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/AlertError */ "./resources/js/components/AlertError.vue");
+//
+//
 //
 //
 //
@@ -2505,6 +2532,10 @@ __webpack_require__.r(__webpack_exports__);
 
     },
     submitForm: function submitForm() {
+      var _this = this;
+
+      _this.addModel();
+
       console.log("====================================");
       console.log(this.form);
       console.log("====================================");
@@ -39221,7 +39252,7 @@ var render = function() {
             1
           ),
           _vm._v(" "),
-          _c("router-view", { staticClass: "p-6 flex" })
+          _c("router-view", { staticClass: "p-6" })
         ],
         1
       )
@@ -39365,7 +39396,20 @@ var render = function() {
                 hidden: _vm.showError,
                 msg: "Debe seleccionar al menos un permiso"
               }
-            })
+            }),
+            _vm._v(" "),
+            _c(
+              "t-alert",
+              {
+                attrs: {
+                  "base-class": "border px-4 py-3 rounded relative",
+                  "danger-class": "bg-red-100 border-red-400 text-red-700",
+                  variant: "success",
+                  show: _vm.creado
+                }
+              },
+              [_c("p", [_vm._v("Permisos creados.")])]
+            )
           ],
           1
         ),
@@ -39377,7 +39421,7 @@ var render = function() {
               { staticClass: "block w-full" },
               [
                 _c("h2", { staticClass: "mt-2 text-3xl" }, [
-                  _vm._v("\n          Permisos para el modelo\n          "),
+                  _vm._v("\n            Permisos para el modelo\n            "),
                   _c("span", { staticClass: "italic" }, [
                     _vm._v(_vm._s(_vm.name))
                   ])
@@ -39450,7 +39494,41 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "inline-block relative w-64 mt-10" }, [
-              _vm._m(0),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.rol,
+                      expression: "rol"
+                    }
+                  ],
+                  staticClass:
+                    "block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.rol = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
+                },
+                [
+                  _c("option", [_vm._v("Si")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("No")])
+                ]
+              ),
               _vm._v(" "),
               _c(
                 "div",
@@ -39505,21 +39583,7 @@ var render = function() {
       ])
     : _vm._e()
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "select",
-      {
-        staticClass:
-          "block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-      },
-      [_c("option", [_vm._v("Si")]), _vm._v(" "), _c("option", [_vm._v("No")])]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -39800,12 +39864,18 @@ var render = function() {
                   {
                     attrs: {
                       label: "Nombre",
-                      feedback: "Only letter without number"
+                      feedback: "Solo letras sin espacios en minúsculas"
                     }
                   },
                   [
                     _c("t-input", {
-                      attrs: { type: "text" },
+                      attrs: {
+                        type: "text",
+                        pattern: "^([a-z]+)$",
+                        autofocus: "true",
+                        maxlength: "12",
+                        required: "true"
+                      },
                       model: {
                         value: _vm.form.name,
                         callback: function($$v) {
@@ -39985,83 +40055,86 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("div", { staticClass: "w-full" }, [
-      _c("div", { staticClass: "w-full flex justify-around" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.model,
-              expression: "model"
-            }
-          ],
-          staticClass: "form-input mt-1 block w-96 mr-2",
-          attrs: {
-            disabled: !_vm.sendModel,
-            type: "text",
-            id: "model",
-            placeholder: "venta",
-            autofocus: ""
-          },
-          domProps: { value: _vm.model },
+      _c(
+        "form",
+        {
+          staticClass: "w-full flex justify-around",
           on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.model = $event.target.value
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.submitForm($event)
             }
+          }
+        },
+        [
+          _c(
+            "label",
+            {
+              staticClass: "w-1/3 my-2 py-2 text-center text-lg",
+              attrs: { for: "model" }
+            },
+            [_vm._v("Nombre")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "w-1/3 my-2" },
+            [
+              _c("t-input", {
+                attrs: {
+                  id: "model",
+                  type: "text",
+                  pattern: "^([a-z]+)$",
+                  maxlength: "12",
+                  autofocus: "",
+                  required: ""
+                },
+                model: {
+                  value: _vm.model,
+                  callback: function($$v) {
+                    _vm.model = $$v
+                  },
+                  expression: "model"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "w-1/3 my-2 flex justify-center" }, [
+            _c("input", {
+              staticClass:
+                "w-1/2 ml-2 my-2 bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded",
+              attrs: { type: "submit", disabled: _vm.loading, value: "Buscar" }
+            })
+          ])
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      [
+        _c("AlertError", {
+          staticClass: "mt-4",
+          attrs: {
+            hidden: _vm.modelInvalid,
+            msg: "El modelo ya cuenta con permisos"
           }
         }),
         _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass:
-              "ml-2 my-2 bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded",
-            attrs: { disabled: _vm.loading },
-            on: { click: _vm.addModel }
-          },
-          [_vm._v("Agregar")]
-        )
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        [
-          _c("AlertError", {
-            staticClass: "mt-4",
-            attrs: {
-              hidden: _vm.modelInvalid,
-              msg: "El modelo ya cuenta con permisos"
-            }
-          }),
-          _vm._v(" "),
-          _vm.disponible
-            ? _c("ComponentPermission", {
-                staticClass: "mt-4",
-                attrs: { name: _vm.model }
-              })
-            : _vm._e()
-        ],
-        1
-      )
-    ])
+        _vm.disponible
+          ? _c("ComponentPermission", {
+              staticClass: "mt-4",
+              attrs: { name: _vm.model }
+            })
+          : _vm._e()
+      ],
+      1
+    )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("label", { staticClass: "py-3 text-blue-500 font-bold mr-2" }, [
-      _vm._v("\n        Modelo\n        "),
-      _c("span", { staticClass: "italic" }, [_vm._v("(en singular)")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
