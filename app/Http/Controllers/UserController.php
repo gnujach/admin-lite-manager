@@ -200,7 +200,7 @@ class UserController extends Controller
         $this->authorize('create', User::class);
         if ($request->ajax()) {
             $validatedData = $request->validate([
-                'model' => 'required|unique:roles|max:8'
+                'model' => 'required|unique:roles|max:12'
             ]);
             return response()->json($request);
             if ($request['rol'] = 'Si') {
