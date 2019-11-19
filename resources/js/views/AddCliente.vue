@@ -3,22 +3,7 @@
     <form @submit.prevent="submitForm" class="w-full max-w-lg">
       <div class="mt-3">
         <div class>
-          <div class="pl-3">
-           <t-input-group
-            label="Nombre"
-            feedback="Solo letras sin espacios en minúsculas"
-
-          >
-            <t-input
-              v-model="form.name"
-              type="text"
-              pattern="^([a-z]+)$"
-              autofocus=true
-              maxlength="12"
-              required=true
-            />
-          </t-input-group>
-          </div>
+          <div class="pl-3"></div>
           <div class="pl-3">
             <label class="block">
               <span class="text-gray-700">Primer Apellido</span>

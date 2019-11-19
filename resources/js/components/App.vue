@@ -14,16 +14,43 @@
               />
             </svg>
           </router-link>
-          <p class="pt-12 text-gray-500 uppercase text-sm font-bold">Clientes</p>
-          <router-link to="/clientes/" class="flex py-2 items-center text-sm hover:text-blue-600">
-            <svg viewBox="0 0 24 24" class="fill-current text-blue-600 w-5 h-5">
-              <path
-                d="M23.3 11.9c0 .9-.6 1.4-1.4 1.4h-8.5v8.5c0 .9-.6 1.4-1.4 1.4s-1.4-.6-1.4-1.4v-8.5H2c-.9 0-1.4-.6-1.4-1.4 0-.9.6-1.4 1.4-1.4h8.5V1.9c0-.9.6-1.4 1.4-1.4s1.4.6 1.4 1.4v8.5h8.5c.9 0 1.5.6 1.5 1.5z"
-              />
-            </svg>
-            <div class="tracking-wide pl-3 uppercase">nuevo</div>
-          </router-link>
-          <p class="pt-12 text-gray-500 uppercase text-sm font-bold">Estudios</p>
+          <Dropdown title="clientes">
+            <template slot="list">
+              <div class="items-center p-1 p-2 w-full">
+                <router-link
+                  to="/clientes/"
+                  class="flex py-2 items-center text-sm hover:text-blue-600"
+                >
+                  <svg viewBox="0 0 24 24" class="fill-current text-blue-600 w-5 h-5">
+                    <path
+                      d="M23.3 11.9c0 .9-.6 1.4-1.4 1.4h-8.5v8.5c0 .9-.6 1.4-1.4 1.4s-1.4-.6-1.4-1.4v-8.5H2c-.9 0-1.4-.6-1.4-1.4 0-.9.6-1.4 1.4-1.4h8.5V1.9c0-.9.6-1.4 1.4-1.4s1.4.6 1.4 1.4v8.5h8.5c.9 0 1.5.6 1.5 1.5z"
+                    />
+                  </svg>
+                  <div class="tracking-wide pl-3 uppercase" v-bind:isOpen="false">nuevo</div>
+                </router-link>
+                <hr class="border-t mx-2 border-grey-ligght" />
+                <a href="#" class="px-4 py-2 block text-black hover:bg-grey-lighter">Logout</a>
+              </div>
+            </template>
+          </Dropdown>
+          <Dropdown title="servicios">
+            <template slot="list">
+              <div class="items-center p-1 p-2 w-full">
+                <router-link
+                  v-if="$parent.userCan('manage-users')"
+                  to="/admin/usuarios/"
+                  class="flex py-2 items-center text-sm hover:text-blue-600"
+                >
+                  <svg viewBox="0 0 24 24" class="fill-current text-blue-600 w-5 h-5">
+                    <path
+                      d="M23.3 11.9c0 .9-.6 1.4-1.4 1.4h-8.5v8.5c0 .9-.6 1.4-1.4 1.4s-1.4-.6-1.4-1.4v-8.5H2c-.9 0-1.4-.6-1.4-1.4 0-.9.6-1.4 1.4-1.4h8.5V1.9c0-.9.6-1.4 1.4-1.4s1.4.6 1.4 1.4v8.5h8.5c.9 0 1.5.6 1.5 1.5z"
+                    />
+                  </svg>
+                  <div class="tracking-wide pl-3 uppercase" v-bind:isOpen="false">Listar usuarios</div>
+                </router-link>
+              </div>
+            </template>
+          </Dropdown>
           <p class="pt-12 text-gray-500 uppercase text-sm font-bold">Configuraciones</p>
           <p
             v-if="$parent.userCan('manage-users')"
@@ -79,10 +106,11 @@
 </template>
 <script>
 import UserCircle from "./UserCircle";
+import Dropdown from "./Dropdown";
 import Avatar from "./AvatarComponet";
 export default {
   name: "App",
-  components: { UserCircle, Avatar },
+  components: { UserCircle, Avatar, Dropdown },
   props: ["user"]
 };
 </script>
